@@ -31,10 +31,14 @@ public class Snail {
 	 * @param sy - y coordinate
 	 * @param s  - the "positioning" of the Snail
 	 */
-	public Snail(int sx, int sy, String s) {
+	//controls whether the snail's eyes are open
+	public boolean awake;
+	
+	public Snail(int sx, int sy, String s, boolean awake) {
 		this.setSide(s);
 		this.x = sx;
 		this.y = sy;
+		this.awake = awake;
 	}
 
 	/**
@@ -58,7 +62,7 @@ public class Snail {
 	 * 
 	 * @param g - the window to draw to.
 	 */
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D g, boolean awake) {
 		// By calling move here, if we want to move our snail, we can do so.
 		// Move gets called by draw, so whenever draw gets called.
 		this.move();
@@ -71,18 +75,18 @@ public class Snail {
 
 		// Note that I need to compare strings with ".equals" this is a Java weirdness.
 		if ("bottom".equals(this.direction)) {
-			drawSnail(position, Color.red, Color.white, Color.black);
+			drawSnail(position, Color.red, Color.white, Color.black, awake);
 		} else if ("top".equals(this.direction)) {
 			position.scale(-1, -1);
-			drawSnail(position, Color.red, Color.white, Color.black);
+			drawSnail(position, Color.red, Color.white, Color.black, awake);
 		} else if ("left".equals(this.direction)) {
 			// Oh no, radians.
 			position.rotate(Math.PI / 2);
-			drawSnail(position, Color.red, Color.white, Color.black);
+			drawSnail(position, Color.red, Color.white, Color.black, awake);
 		} else { // we don't have to say "right" here.
 			// Oh no, radians.
 			position.rotate(-Math.PI / 2);
-			drawSnail(position, Color.red, Color.white, Color.black);
+			drawSnail(position, Color.red, Color.white, Color.black, awake);
 		}
 
 		// It's OK if you forget this, Java will eventually notice, but better to have
@@ -98,7 +102,7 @@ public class Snail {
 	 * @param shellColor The color of the snail shell.
 	 * @param eyeColor   The color of the snail eye.
 	 */
-	public static void drawSnail(Graphics2D g, Color bodyColor, Color shellColor, Color eyeColor) {
+	public static void drawSnail(Graphics2D g, Color bodyColor, Color shellColor, Color eyeColor, boolean awake) {
 		Shape body = new Rectangle2D.Double(0, 0, 40, 50);
 		Shape tentacleL = new Rectangle2D.Double(0, -20, 5, 20);
 		Shape eyeWhiteL = new Ellipse2D.Double(-4, -28, 12, 12);
@@ -107,10 +111,19 @@ public class Snail {
 		g.setColor(bodyColor);
 		g.fill(body);
 		g.fill(tentacleL);
-		g.setColor(Color.white);
-		g.fill(eyeWhiteL);
-		g.setColor(eyeColor);
-		g.fill(eyePupilL);
+		
+		//draws left eye according to whether snail is awake 
+		if (awake == true) {
+			g.setColor(Color.white);
+			g.fill(eyeWhiteL);
+			g.setColor(eyeColor);
+			g.fill(eyePupilL);
+		} else if (awake == false){
+			g.setColor(bodyColor);
+			g.fill(eyeWhiteL);
+			g.setColor(bodyColor);
+			g.fill(eyePupilL);
+		}
 
 		Shape tentacleR = new Rectangle2D.Double(35, -20, 5, 20);
 		Shape eyeWhiteR = new Ellipse2D.Double(35 - 4, -28, 12, 12);
@@ -118,10 +131,20 @@ public class Snail {
 
 		g.setColor(bodyColor);
 		g.fill(tentacleR);
-		g.setColor(Color.white);
-		g.fill(eyeWhiteR);
-		g.setColor(eyeColor);
-		g.fill(eyePupilR);
+
+		//draws right eye if the snail is awake 
+		if (awake == true) {
+			g.setColor(Color.white);
+			g.fill(eyeWhiteR);
+			g.setColor(eyeColor);
+			g.fill(eyePupilR);
+		} else if (awake == false){
+			g.setColor(bodyColor);
+			g.fill(eyeWhiteR);
+			g.setColor(bodyColor);
+			g.fill(eyePupilR);
+		}
+		
 
 		Shape shell3 = new Ellipse2D.Double(45, 20, 10, 10);
 		Shape shell2 = new Ellipse2D.Double(35, 10, 30, 30);

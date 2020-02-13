@@ -1,13 +1,11 @@
 package edu.smith.cs.csc212.aquarium;
 
 import java.awt.Color;
+import java.util.Random;
 import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
+
 
 public class Fish {
-	// Every fish has a xCoor which is an int.
 	int xCoor;
 	int yCoor;
 	Color color;
@@ -15,30 +13,68 @@ public class Fish {
 	boolean isLittle;
 	int destX;
 	int destY;
+	Random rand = new Random();
 	
 	public Fish(int startX, int startY, Color c, boolean isLittle, boolean facingLeft) {
 		this.xCoor = startX;
 		this.yCoor = startY;
 		this.color = c;
 		this.isLittle = isLittle;
-		this.facingLeft = facingLeft;
 		
-		this.destX = 450;
-		this.destY = 450;
+		this.destX = rand.nextInt(400) + 50;
+		this.destY = rand.nextInt(400) + 50;
+		
+		this.facingLeft = this.xCoor > destX;
 		
 	}
 	
+	//changes the value of the x coordinate based on current position relative to destination
 	public void swim() {
 		if (this.yCoor < this.destY) {
 			this.yCoor +=1;
+			if (this.xCoor<this.destX) {
+				this.xCoor +=1;
+			} 
+			
+			if (this.xCoor>this.destX) {
+				this.xCoor -=1;
+			}
 		}
+		
+		if (this.yCoor > this.destY) {
+			this.yCoor -=1;
+			if (this.xCoor<this.destX) {
+				this.xCoor +=1;
+			} 
+			
+			if (this.xCoor>this.destX) {
+				this.xCoor -=1;
+			}
+		}
+		
+		if (this.yCoor == this.destY) {
+			if (this.xCoor<this.destX) {
+				this.xCoor +=1;
+			} 
+			
+			if (this.xCoor>this.destX) {
+				this.xCoor -=1;
+			}
+		}
+			
+	}
+	
+	//generates a new destination for a fish
+	public void newDest() {
+		this.destX = rand.nextInt(400) + 50;
+		this.destY = rand.nextInt(400) + 50;
+		this.facingLeft = this.xCoor > destX;
 	}
 	
 	public void draw(Graphics2D g) {
 		this.swim();
-		//fish face left and are small
-		//smallFacingRight, facingLeft, and facingRight
 		
+		//draws the fish facing the correct direction depending on current position relative to destination
 		if (this.isLittle) {
 			if (this.facingLeft) {
 				DrawFish.smallFacingLeft(g, this.color, this.xCoor, this.yCoor);
@@ -53,8 +89,5 @@ public class Fish {
 			}
 		}
 		
-		
 	}
-		
-	
 }
